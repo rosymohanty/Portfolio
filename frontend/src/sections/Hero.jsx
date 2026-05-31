@@ -5,10 +5,11 @@ import {
   Github,
   Linkedin,
   Instagram,
-  
   Download,
 } from "lucide-react";
 import { AnimatedBorderButton } from "../components/AnimatedBorderButton";
+// ✅ Import the image correctly
+import profilePhoto from "../assets/profile-photo.jpeg";
 
 const skills = [
   "React.js",
@@ -32,10 +33,10 @@ export const Hero = () => {
       {/* Background */}
       <div className="absolute inset-0">
         <img 
-  src="https://images.unsplash.com/photo-1517245386807-bb43f82c8c5c?w=1920&q=80" 
-  alt="Hero background" 
-  className="w-full h-full object-cover opacity-40"
-/>
+          src="https://images.unsplash.com/photo-1517245386807-bb43f82c8c5c?w=1920&q=80" 
+          alt="Hero background" 
+          className="w-full h-full object-cover opacity-40"
+        />
         <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/80 to-background" />
       </div>
 
@@ -86,7 +87,7 @@ export const Hero = () => {
               </h1>
 
               <p className="text-lg text-muted-foreground max-w-lg animate-fade-in animation-delay-200">
-                Hi, I’m Rojalin Mohanty — a passionate Full Stack Web Developer.
+                Hi, I'm Rojalin Mohanty — a passionate Full Stack Web Developer.
                 I build responsive frontend applications using React and develop
                 secure backend APIs using Node.js and Express.
                 Currently working on real-world MERN stack projects and deploying
@@ -97,20 +98,19 @@ export const Hero = () => {
             {/* Buttons */}
             <div className="flex flex-wrap gap-4 animate-fade-in animation-delay-300">
               <Button
-  size="lg"
-  onClick={() => {
-    const section = document.getElementById("contact");
-    section?.scrollIntoView({ behavior: "smooth" });
-  }}
->
-  Contact Me <ArrowRight className="w-5 h-5" />
-</Button>
+                size="lg"
+                onClick={() => {
+                  const section = document.getElementById("contact");
+                  section?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
+                Contact Me <ArrowRight className="w-5 h-5" />
+              </Button>
 
-             
-<AnimatedBorderButton onClick={() => window.open("/resume.pdf", "_blank")}>
-  <Download className="w-5 h-5" />
-  Download Resume
-</AnimatedBorderButton>
+              <AnimatedBorderButton onClick={() => window.open("/resume.pdf", "_blank")}>
+                <Download className="w-5 h-5" />
+                Download Resume
+              </AnimatedBorderButton>
             </div>
 
             {/* Social Links */}
@@ -122,7 +122,7 @@ export const Hero = () => {
               {[
                 { icon: Github, href: "https://github.com/rosymohanty" },
                 { icon: Linkedin, href: "https://www.linkedin.com/in/rojalin-mohanty-68a131319/" },
-                {icon: Instagram, href:"https://www.instagram.com/_.rosyy._24?igsh=MXZjMmIxZjM5Mmt3Nw=="}
+                { icon: Instagram, href: "https://www.instagram.com/_.rosyy._24?igsh=MXZjMmIxZjM5Mmt3Nw==" }
               ].map((social, idx) => (
                 <a
                   key={idx}
@@ -146,8 +146,9 @@ export const Hero = () => {
                 blur-2xl animate-pulse"
               />
               <div className="relative glass rounded-3xl p-2 glow-border">
+                {/* ✅ FIXED: Use imported image variable */}
                 <img
-                  src="/src/assets/profile-photo.jpeg"
+                  src={profilePhoto}
                   alt="Rojalin Mohanty"
                   className="w-full aspect-[4/5] object-cover rounded-2xl"
                 />
