@@ -43,39 +43,40 @@ export const Contact = () => {
   });
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    setIsLoading(true);
-    setSubmitStatus({ type: null, message: "" });
-    try {
-      await axios.post(
-  "/contact",
-  formData
-);
+  setIsLoading(true);
+  setSubmitStatus({ type: null, message: "" });
+  
+  try {
+    const response = await axios.post("/contact", formData);
+    
+    setSubmitStatus({
+      type: "success",
+      message: response.data.message || "Message sent successfully!",
+    });
 
-      setSubmitStatus({
-        type: "success",
-        message: "Message sent successfully!",
-      });
+    setFormData({
+      name: "",
+      email: "",
+      message: "",
+    });
 
-      setFormData({
-        name: "",
-        email: "",
-        message: "",
-      });
+  } catch (error) {
+    console.error("Submit error:", error);
+    
+    // ✅ Show user-friendly error message
+    const errorMessage = error.userMessage || error.response?.data?.message || "Failed to send message. Please try again.";
+    
+    setSubmitStatus({
+      type: "error",
+      message: errorMessage,
+    });
 
-    } catch (error) {
-      console.error(error);
-
-      setSubmitStatus({
-        type: "error",
-        message: "Failed to send message. Please try again.",
-      });
-
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  } finally {
+    setIsLoading(false);
+  }
+};
   return (
     <section id="contact" className="py-32 relative overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-full">
@@ -132,15 +133,19 @@ export const Contact = () => {
                 >
                   Email
                 </label>
-                <input
-                  required
-                  placeholder="your@email.com"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                  className="w-full px-4 py-3 bg-surface rounded-xl border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
-                />
+                
+<input
+  id="email"
+  name="email"
+  type="email"
+  required
+  placeholder="your@email.com"
+  value={formData.email}
+  onChange={(e) =>
+    setFormData({ ...formData, email: e.target.value })
+  }
+  className="w-full px-4 py-3 bg-surface rounded-xl border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+/>
               </div>
 
               <div>

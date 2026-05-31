@@ -21,8 +21,8 @@ const projects = [
       "JWT",
       "Tailwind CSS",
     ],
-    link: "#",
-    github: "#",
+    link: "https://word-loom-alpha.vercel.app",
+    github: "https://github.com/rosymohanty/WordLoom",
   },
   {
     title: "CarBook - Car Booking System",
@@ -69,8 +69,8 @@ const projects = [
       "Tailwind CSS",
       "REST API",
     ],
-    link: "#",
-    github: "https://github.com/rosymohanty/QuickBite.git",
+    link: "https://quick-bite-eight-pi.vercel.app",
+    github: "https://github.com/rosymohanty/QuickBite",
   },
 ];
 

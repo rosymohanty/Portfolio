@@ -106,10 +106,11 @@ export const Hero = () => {
   Contact Me <ArrowRight className="w-5 h-5" />
 </Button>
 
-              <AnimatedBorderButton>
-                <Download className="w-5 h-5" />
-                Download Resume
-              </AnimatedBorderButton>
+             
+<AnimatedBorderButton onClick={() => window.open("/resume.pdf", "_blank")}>
+  <Download className="w-5 h-5" />
+  Download Resume
+</AnimatedBorderButton>
             </div>
 
             {/* Social Links */}

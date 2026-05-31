@@ -16,8 +16,8 @@ app.get("/", (req, res) => {
   res.send("Portfolio Backend API is running 🚀");
 });
 
-// API Routes
-app.use("/api", contactRoutes);
+// ✅ API Routes - matches frontend axios call
+app.use("/api", contactRoutes);  // POST to /api/contact
 
 // MongoDB Connection
 mongoose
