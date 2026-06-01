@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { AnimatedBorderButton } from "../components/AnimatedBorderButton";
 import profilePhoto from "../assets/profile-photo.jpeg";
-import { useEffect } from "react";
+import { useEffect } from "react"; // Keep this for any future use, but remove the auto-download
 
 const skills = [
   "React.js",
@@ -28,48 +28,24 @@ const skills = [
 ];
 
 export const Hero = () => {
-  // ✅ Working download function
-  const handleDownloadResume = async () => {
-    // Try multiple PDF paths (try different naming conventions)
-    const possiblePaths = [
-      '/ROJALIN_MOHANTY.pdf',
-      '/Rojalin_Mohanty_Resume.pdf', 
-      '/resume.pdf',
-      '/Rojalin_Mohanty.pdf',
-      '/ROJALIN_MOHANTY (1).pdf'
-    ];
+  // ✅ This function ONLY runs when you click the button
+  const handleDownloadResume = () => {
+    // For Vite, files in public folder are served from root
+    const pdfPath = '/ROJALIN_MOHANTY.pdf';
     
-    for (const path of possiblePaths) {
-      try {
-        const response = await fetch(path, { method: 'HEAD' });
-        if (response.ok) {
-          // File found, download it
-          const fullResponse = await fetch(path);
-          const blob = await fullResponse.blob();
-          const url = window.URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = 'Rojalin_Mohanty_Resume.pdf';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          window.URL.revokeObjectURL(url);
-          return; // Exit if successful
-        }
-      } catch (error) {
-        console.log(`Path ${path} not found`);
-      }
-    }
+    // Create a temporary anchor element
+    const link = document.createElement('a');
+    link.href = pdfPath;
+    link.download = 'Rojalin_Mohanty_Resume.pdf';
     
-    // If no file found, show alert
-    alert('Resume file not found. Please check if the PDF is in the public folder.');
+    // Append to body, click, and remove
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
-  // Debug: Log all files in public folder (remove in production)
-  useEffect(() => {
-    console.log('Looking for resume PDF in public folder...');
-    handleDownloadResume(); // This will log which paths work
-  }, []);
+  // ❌ REMOVED the automatic download useEffect
+  // Now nothing will download automatically when the portfolio opens
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
@@ -88,7 +64,9 @@ export const Hero = () => {
               backgroundColor: "#20B2A6",
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              animation: `slow-drift ${15 + Math.random() * 20}s ease-in-out infinite`,
+              animation: `slow-drift ${
+                15 + Math.random() * 20
+              }s ease-in-out infinite`,
               animationDelay: `${Math.random() * 5}s`,
             }}
           />
@@ -143,7 +121,7 @@ export const Hero = () => {
                 Contact Me <ArrowRight className="w-5 h-5" />
               </Button>
 
-              {/* ✅ Download Resume Button - Now Working */}
+              {/* ✅ Download only when clicked */}
               <AnimatedBorderButton onClick={handleDownloadResume}>
                 <Download className="w-5 h-5" />
                 Download Resume
