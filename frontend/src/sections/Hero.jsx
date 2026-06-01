@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { AnimatedBorderButton } from "../components/AnimatedBorderButton";
 import profilePhoto from "../assets/profile-photo.jpeg";
-import { useEffect } from "react"; // Keep this for any future use, but remove the auto-download
+import { useState, useEffect } from "react";
 
 const skills = [
   "React.js",
@@ -28,24 +28,33 @@ const skills = [
 ];
 
 export const Hero = () => {
-  // ✅ This function ONLY runs when you click the button
-  const handleDownloadResume = () => {
-    // For Vite, files in public folder are served from root
-    const pdfPath = '/ROJALIN_MOHANTY.pdf';
-    
-    // Create a temporary anchor element
-    const link = document.createElement('a');
-    link.href = pdfPath;
-    link.download = 'Rojalin_Mohanty_Resume.pdf';
-    
-    // Append to body, click, and remove
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+  const [pdfExists, setPdfExists] = useState(false);
 
-  // ❌ REMOVED the automatic download useEffect
-  // Now nothing will download automatically when the portfolio opens
+  // Check if PDF exists when component mounts
+  useEffect(() => {
+    fetch('/ROJALIN_MOHANTY.pdf', { method: 'HEAD' })
+      .then(response => {
+        if (response.ok) {
+          console.log('✅ PDF found at /ROJALIN_MOHANTY.pdf');
+          setPdfExists(true);
+        } else {
+          console.error('❌ PDF NOT found at /ROJALIN_MOHANTY.pdf');
+          setPdfExists(false);
+        }
+      })
+      .catch(error => {
+        console.error('Error checking PDF:', error);
+        setPdfExists(false);
+      });
+  }, []);
+
+  const handleOpenResume = () => {
+    if (pdfExists) {
+      window.open('/ROJALIN_MOHANTY.pdf', '_blank');
+    } else {
+      alert('Resume PDF not found. Please make sure the file is in the public folder.');
+    }
+  };
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
@@ -121,11 +130,24 @@ export const Hero = () => {
                 Contact Me <ArrowRight className="w-5 h-5" />
               </Button>
 
-              {/* ✅ Download only when clicked */}
-              <AnimatedBorderButton onClick={handleDownloadResume}>
-                <Download className="w-5 h-5" />
-                Download Resume
-              </AnimatedBorderButton>
+              <button
+  onClick={handleOpenResume}
+  className="
+    inline-flex items-center justify-center gap-2
+    h-12 px-8 py-8
+    rounded-full
+    bg-primary
+    text-primary-foreground
+    font-medium
+    transition-all duration-300
+    hover:scale-105
+    hover:shadow-lg hover:shadow-primary/30
+    active:scale-95
+  "
+>
+  <Download className="w-5 h-5" />
+  Download Resume
+</button>
             </div>
 
             {/* Social Links */}
