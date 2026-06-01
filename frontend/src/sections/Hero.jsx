@@ -8,8 +8,8 @@ import {
   Download,
 } from "lucide-react";
 import { AnimatedBorderButton } from "../components/AnimatedBorderButton";
-// ✅ Import the image correctly
 import profilePhoto from "../assets/profile-photo.jpeg";
+import { useEffect } from "react";
 
 const skills = [
   "React.js",
@@ -28,14 +28,53 @@ const skills = [
 ];
 
 export const Hero = () => {
+  // ✅ Working download function
+  const handleDownloadResume = async () => {
+    // Try multiple PDF paths (try different naming conventions)
+    const possiblePaths = [
+      '/ROJALIN_MOHANTY.pdf',
+      '/Rojalin_Mohanty_Resume.pdf', 
+      '/resume.pdf',
+      '/Rojalin_Mohanty.pdf',
+      '/ROJALIN_MOHANTY (1).pdf'
+    ];
+    
+    for (const path of possiblePaths) {
+      try {
+        const response = await fetch(path, { method: 'HEAD' });
+        if (response.ok) {
+          // File found, download it
+          const fullResponse = await fetch(path);
+          const blob = await fullResponse.blob();
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = 'Rojalin_Mohanty_Resume.pdf';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
+          return; // Exit if successful
+        }
+      } catch (error) {
+        console.log(`Path ${path} not found`);
+      }
+    }
+    
+    // If no file found, show alert
+    alert('Resume file not found. Please check if the PDF is in the public folder.');
+  };
+
+  // Debug: Log all files in public folder (remove in production)
+  useEffect(() => {
+    console.log('Looking for resume PDF in public folder...');
+    handleDownloadResume(); // This will log which paths work
+  }, []);
+
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0">
-        <img 
-          src="https://images.unsplash.com/photo-1517245386807-bb43f82c8c5c?w=1920&q=80" 
-          className="w-full h-full object-cover opacity-40"
-        />
         <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/80 to-background" />
       </div>
 
@@ -49,9 +88,7 @@ export const Hero = () => {
               backgroundColor: "#20B2A6",
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              animation: `slow-drift ${
-                15 + Math.random() * 20
-              }s ease-in-out infinite`,
+              animation: `slow-drift ${15 + Math.random() * 20}s ease-in-out infinite`,
               animationDelay: `${Math.random() * 5}s`,
             }}
           />
@@ -106,7 +143,8 @@ export const Hero = () => {
                 Contact Me <ArrowRight className="w-5 h-5" />
               </Button>
 
-              <AnimatedBorderButton onClick={() => window.open("/resume.pdf", "_blank")}>
+              {/* ✅ Download Resume Button - Now Working */}
+              <AnimatedBorderButton onClick={handleDownloadResume}>
                 <Download className="w-5 h-5" />
                 Download Resume
               </AnimatedBorderButton>
@@ -145,7 +183,6 @@ export const Hero = () => {
                 blur-2xl animate-pulse"
               />
               <div className="relative glass rounded-3xl p-2 glow-border">
-                {/* ✅ FIXED: Use imported image variable */}
                 <img
                   src={profilePhoto}
                   alt="Rojalin Mohanty"
