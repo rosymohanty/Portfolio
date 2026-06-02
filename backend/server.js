@@ -21,9 +21,15 @@ connectDB();
 
 // Middlewares
 app.use(cors({
-  origin: process.env.CLIENT_URL || "http://localhost:5173",
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'https://portfolio-mauve-three-64.vercel.app',  // Your Vercel URL
+    'https://portfolio-r2nu.onrender.com'           // Allow self
+  ],
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json());
