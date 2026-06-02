@@ -1,13 +1,15 @@
-const express = require("express");
+import express from "express";
+import { sendMessage } from "../controllers/contactController.js";
+
 const router = express.Router();
-const { sendMessage } = require("../controllers/contactController");
 
-// ✅ POST /api/contact
-router.post("/contact", sendMessage);
-
-// ✅ Optional: GET /api/contact (for testing)
-router.get("/contact", (req, res) => {
-  res.json({ message: "Contact API is working. Send POST requests to this endpoint." });
+router.post("/", sendMessage);
+router.get("/test-db", async (req, res) => {
+  try {
+    const count = await Contact.countDocuments();
+    res.json({ success: true, message: "Database connected", count });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
 });
-
-module.exports = router;
+export default router;

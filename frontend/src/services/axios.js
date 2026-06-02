@@ -8,7 +8,7 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 40000, // 10 second timeout
+  timeout: 10000, // 65s — enough for Render free tier cold start (~50s)
 });
 
 // ✅ Request interceptor for debugging
@@ -33,7 +33,9 @@ api.interceptors.response.use(
     console.error("API Error:", error.response?.data || error.message);
     
     // ✅ Return a more user-friendly error
-    if (error.code === 'ERR_NETWORK') {
+    if (error.code === 'ECONNABORTED') {
+      error.userMessage = "Server is waking up from sleep. Please try again in a moment.";
+    } else if (error.code === 'ERR_NETWORK') {
       error.userMessage = "Cannot connect to server. Please check your internet connection.";
     } else if (error.response?.status === 500) {
       error.userMessage = "Server error. Please try again later.";
