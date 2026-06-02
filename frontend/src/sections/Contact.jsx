@@ -89,7 +89,7 @@ export const Contact = () => {
         message: "",
       });
 
-      const response = await api.post("/contact", {
+      const response = await api.post("/", {
         name: formData.name,
         email: formData.email,
         message: formData.message,
