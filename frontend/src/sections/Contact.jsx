@@ -8,7 +8,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/Button";
 import { useState } from "react";
-import axios from "../services/axios";
+import api from "../services/axios";
+
 const contactInfo = [
   {
     icon: Mail,
@@ -38,19 +39,47 @@ export const Contact = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [submitStatus, setSubmitStatus] = useState({
-    type: null, // 'success' or 'error'
+    type: null,
     message: "",
   });
+
+  
+    
 
   const handleSubmit = async (e) => {
   e.preventDefault();
 
-  setIsLoading(true);
-  setSubmitStatus({ type: null, message: "" });
-  
+  // Validation
+  if (!formData.name || !formData.email || !formData.message) {
+    setSubmitStatus({
+      type: "error",
+      message: "Please fill in all fields",
+    });
+    return;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(formData.email)) {
+    setSubmitStatus({
+      type: "error",
+      message: "Please enter a valid email address",
+    });
+    return;
+  }
+
   try {
-    const response = await axios.post("/contact", formData);
-    
+    setIsLoading(true);
+    setSubmitStatus({
+      type: null,
+      message: "",
+    });
+
+    const response = await api.post("/contact", {
+      name: formData.name,
+      email: formData.email,
+      message: formData.message,
+    });
+
     setSubmitStatus({
       type: "success",
       message: response.data.message || "Message sent successfully!",
@@ -62,21 +91,29 @@ export const Contact = () => {
       message: "",
     });
 
+    // Clear success message after 5 seconds
+    setTimeout(() => {
+      setSubmitStatus({
+        type: null,
+        message: "",
+      });
+    }, 5000);
+
   } catch (error) {
     console.error("Submit error:", error);
-    
-    // ✅ Show user-friendly error message
-    const errorMessage = error.userMessage || error.response?.data?.message || "Failed to send message. Please try again.";
-    
+
     setSubmitStatus({
       type: "error",
-      message: errorMessage,
+      message:
+        error.userMessage ||
+        error.response?.data?.message ||
+        "Failed to send message. Please try again.",
     });
-
   } finally {
     setIsLoading(false);
   }
 };
+
   return (
     <section id="contact" className="py-32 relative overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-full">
@@ -106,10 +143,7 @@ export const Contact = () => {
           <div className="glass p-8 rounded-3xl border border-primary/30 animate-fade-in animation-delay-300">
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium mb-2"
-                >
+                <label htmlFor="name" className="block text-sm font-medium mb-2">
                   Name
                 </label>
                 <input
@@ -126,36 +160,29 @@ export const Contact = () => {
               </div>
 
               <div>
-                <label
-                  htmlFor="email"
-                  type="email"
-                  className="block text-sm font-medium mb-2"
-                >
+                <label htmlFor="email" className="block text-sm font-medium mb-2">
                   Email
                 </label>
-                
-<input
-  id="email"
-  name="email"
-  type="email"
-  required
-  placeholder="your@email.com"
-  value={formData.email}
-  onChange={(e) =>
-    setFormData({ ...formData, email: e.target.value })
-  }
-  className="w-full px-4 py-3 bg-surface rounded-xl border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
-/>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  placeholder="your@email.com"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  className="w-full px-4 py-3 bg-surface rounded-xl border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                />
               </div>
 
               <div>
-                <label
-                  htmlFor="message"
-                  className="block text-sm font-medium mb-2"
-                >
+                <label htmlFor="message" className="block text-sm font-medium mb-2">
                   Message
                 </label>
                 <textarea
+                  id="message"
                   rows={5}
                   required
                   value={formData.message}
@@ -185,12 +212,11 @@ export const Contact = () => {
 
               {submitStatus.type && (
                 <div
-                  className={`flex items-center gap-3
-                     p-4 rounded-xl ${
-                       submitStatus.type === "success"
-                         ? "bg-green-500/10 border border-green-500/20 text-green-400"
-                         : "bg-red-500/10 border border-red-500/20 text-red-400"
-                     }`}
+                  className={`flex items-center gap-3 p-4 rounded-xl ${
+                    submitStatus.type === "success"
+                      ? "bg-green-500/10 border border-green-500/20 text-green-400"
+                      : "bg-red-500/10 border border-red-500/20 text-red-400"
+                  }`}
                 >
                   {submitStatus.type === "success" ? (
                     <CheckCircle className="w-5 h-5 flex-shrink-0" />
@@ -200,6 +226,8 @@ export const Contact = () => {
                   <p className="text-sm">{submitStatus.message}</p>
                 </div>
               )}
+              
+              
             </form>
           </div>
 
